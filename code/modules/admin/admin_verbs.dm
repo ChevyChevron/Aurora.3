@@ -72,7 +72,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/toggleghostwriters,
 	/client/proc/toggledrones,
 	/datum/admins/proc/show_skills,
-	/client/proc/check_customitem_activity,
 	/client/proc/man_up,
 	/client/proc/global_man_up,
 	/client/proc/response_team, // Response Teams admin verb,
@@ -136,8 +135,6 @@ var/list/admin_verbs_fun = list(
 	/client/proc/show_tip,
 	/client/proc/fab_tip,
 	/client/proc/apply_sunstate,
-	/client/proc/cure_traumas,
-	/client/proc/add_traumas,
 	/datum/admins/proc/ccannoucment
 	)
 
@@ -145,7 +142,6 @@ var/list/admin_verbs_spawn = list(
 	/client/proc/game_panel,
 	/datum/admins/proc/spawn_fruit,
 	/datum/admins/proc/spawn_custom_item,
-	/datum/admins/proc/check_custom_items,
 	/datum/admins/proc/spawn_plant,
 	/datum/admins/proc/spawn_atom,		// allows us to spawn instances,
 	/client/proc/respawn_character,
@@ -171,7 +167,6 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/toggle_round_spookyness,
 	/datum/admins/proc/toggle_space_ninja,
 	/client/proc/toggle_random_events,
-	/client/proc/check_customitem_activity,
 	/client/proc/nanomapgen_DumpImage,
 	/client/proc/toggle_recursive_explosions,
 	/client/proc/restart_controller,
@@ -350,12 +345,9 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/call_drop_pod,
 	/datum/admins/proc/spawn_fruit,
 	/datum/admins/proc/spawn_custom_item,
-	/datum/admins/proc/check_custom_items,
 	/datum/admins/proc/spawn_plant,
 	/client/proc/show_plant_genes,
 	/datum/admins/proc/spawn_atom,
-	/client/proc/cure_traumas,
-	/client/proc/add_traumas,
 	/client/proc/respawn_character,
 	/client/proc/spawn_chemdisp_cartridge,
 	/client/proc/jobbans,
@@ -400,7 +392,6 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/callproc,
 	/client/proc/callproc_target,
 	/client/proc/debug_controller,
-	/client/proc/check_customitem_activity,
 	/client/proc/print_logout_report,
 	/client/proc/edit_admin_permissions,
 	/proc/possess,
@@ -715,52 +706,6 @@ var/list/admin_verbs_cciaa = list(
 	message_admins("<span class='notice'>[ckey] creating an admin explosion at [epicenter.loc].</span>")
 	feedback_add_details("admin_verb","DB") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/client/proc/cure_traumas(mob/T as mob in mob_list)
-	set category = "Fun"
-	set name = "Cure Traumas"
-	set desc = "Cure the traumas of a given mob."
-
-	if(!istype(T,/mob/living/carbon/human))
-		to_chat(usr, "This can only be done to instances of type /mob/living/carbon/human")
-		return
-
-	var/mob/living/carbon/human/C = T
-
-	C.cure_all_traumas(TRUE, CURE_ADMIN)
-	log_and_message_admins("<span class='notice'>cured [key_name(C)]'s traumas.</span>")
-	feedback_add_details("admin_verb","TB") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
-/client/proc/add_traumas(mob/T as mob in mob_list)
-	set category = "Fun"
-	set name = "Add Traumas"
-	set desc = "Induces traumas on a given mob."
-
-	if(!istype(T,/mob/living/carbon/human))
-		to_chat(usr, "This can only be done to instances of type /mob/living/carbon/human")
-		return
-
-	var/mob/living/carbon/human/C = T
-
-	var/list/traumas = subtypesof(/datum/brain_trauma)
-	var/result = input(usr, "Choose the brain trauma to apply","Traumatize") as null|anything in traumas
-	if(!result) return
-	var/permanent = alert("Do you want to make the trauma unhealable?", "Permanently Traumatize", "Yes", "No")
-	if(permanent == "Yes")
-		permanent = TRUE
-	else
-		permanent = FALSE
-	if(!usr)
-		return
-	if(!C)
-		to_chat(usr, "Mob doesn't exist anymore")
-		return
-
-	if(result)
-		C.gain_trauma(result, permanent)
-
-	log_and_message_admins("<span class='notice'>gave [key_name(C)] [result].</span>")
-	feedback_add_details("admin_verb","BT") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
 /client/proc/make_sound(var/obj/O in range(world.view)) // -- TLE
 	set category = "Special Verbs"
 	set name = "Make Sound"
@@ -910,7 +855,7 @@ var/list/admin_verbs_cciaa = list(
 	if(!H) return
 
 	log_and_message_admins("is altering the appearance of [H].")
-	H.change_appearance(APPEARANCE_ALL, usr, usr, check_species_whitelist = 0, state = admin_state)
+	H.change_appearance(APPEARANCE_ALL, usr, FALSE)
 	feedback_add_details("admin_verb","CHAA") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/change_human_appearance_self()
@@ -930,10 +875,10 @@ var/list/admin_verbs_cciaa = list(
 	switch(alert("Do you wish for [H] to be allowed to select non-whitelisted races?","Alter Mob Appearance","Yes","No","Cancel"))
 		if("Yes")
 			log_and_message_admins("has allowed [H] to change [H.get_pronoun("his")] appearance, without whitelisting of races.")
-			H.change_appearance(APPEARANCE_ALL, H.loc, check_species_whitelist = 0)
+			H.change_appearance(APPEARANCE_ALL, H, FALSE)
 		if("No")
 			log_and_message_admins("has allowed [H] to change [H.get_pronoun("his")] appearance, with whitelisting of races.")
-			H.change_appearance(APPEARANCE_ALL, H.loc, check_species_whitelist = 1)
+			H.change_appearance(APPEARANCE_ALL, H, TRUE)
 	feedback_add_details("admin_verb","CMAS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/change_security_level()
