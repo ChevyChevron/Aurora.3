@@ -11,7 +11,7 @@
 	if(vampire.stealth)
 		to_chat(src, SPAN_NOTICE("Your victims will now forget your interactions, and get paralyzed when you do them."))
 	else
-		to_chat(src, SPAN_NOTICE("Your victims will now remember your interactions, and stay completely mobile during them."))
+		to_chat(src, SPAN_NOTICE("Your victims will now remember your interactions."))
 
 // Drains the target's blood.
 /mob/living/carbon/human/proc/vampire_drain_blood()
@@ -382,6 +382,9 @@
 	if(!vampire)
 		return
 
+	if(isAdminLevel(src.z))
+		return
+
 	if(pulledby)
 		if(pulledby.pulling == src)
 			pulledby.pulling = null
@@ -427,7 +430,7 @@
 
 /obj/effect/dummy/veil_walk/proc/eject_all()
 	for(var/atom/movable/A in src)
-		A.forceMove(loc)
+		A.forceMove(last_valid_turf)
 		if(ismob(A))
 			var/mob/M = A
 			M.reset_view(null)
@@ -616,14 +619,29 @@
 			if(E.status & ORGAN_ARTERY_CUT)
 				E.status &= ~ORGAN_ARTERY_CUT
 				blood_used += 2
-			if(E.status & ORGAN_TENDON_CUT)
-				E.status &= ~ORGAN_TENDON_CUT
+			if((E.tendon_status() & TENDON_CUT) && E.tendon.can_recover())
+				E.tendon.rejuvenate()
 				blood_used += 2
 			if(E.status & ORGAN_BROKEN)
 				E.status &= ~ORGAN_BROKEN
 				E.stage = 0
 				blood_used += 3
 				healed = TRUE
+			if(E.germ_level > 0)
+				if(E.is_infected())
+					E.germ_level = max(0, E.germ_level - 50)
+					blood_used += 1
+				else
+					E.germ_level = 0
+					blood_used += 0.25
+			for(var/datum/wound/W in E.wounds)
+				if(W.germ_level > 0)
+					W.germ_level = max(0, W.germ_level - 50)
+					blood_used += 0.5
+				if(!W.disinfected)
+					W.disinfect()
+					blood_used += 1
+
 
 			if(healed)
 				break

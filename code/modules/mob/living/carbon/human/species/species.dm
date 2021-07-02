@@ -191,6 +191,17 @@
 	var/sprint_cost_factor = 0.9  	// Multiplier on stamina cost for sprinting
 	var/exhaust_threshold = 50	  	// When stamina runs out, the mob takes oxyloss up til this value. Then collapses and drops to walk
 
+	// Pulse modifiers
+	var/low_pulse = 40
+	var/norm_pulse = 60
+	var/fast_pulse = 90
+	var/v_fast_pulse = 120
+	var/max_pulse = 160
+
+	// Blood pressure modifiers
+	var/bp_base_systolic = 120
+	var/bp_base_disatolic = 80
+
 	var/gluttonous = 0            // Can eat some mobs. Values can be GLUT_TINY, GLUT_SMALLER, GLUT_ANYTHING, GLUT_ITEM_TINY, GLUT_ITEM_NORMAL, GLUT_ITEM_ANYTHING, GLUT_PROJECTILE_VOMIT
 	var/stomach_capacity = 5      // How much stuff they can stick in their stomach
 	var/allowed_eat_types = TYPE_ORGANIC
@@ -295,7 +306,7 @@
 	for(var/obj/item/clothing/clothes in H)
 		if(H.l_hand == clothes|| H.r_hand == clothes)
 			continue
-		if((clothes.body_parts_covered & UPPER_TORSO) && (clothes.body_parts_covered & LOWER_TORSO))
+		if((clothes.body_parts_covered & UPPER_TORSO) && (clothes.body_parts_covered & LOWER_TORSO) && !clothes.no_overheat)
 			covered = 1
 			break
 
@@ -536,11 +547,16 @@
 		prescriptions -= H.equipment_prescription
 	return Clamp(prescriptions, 0, 7)
 
-/datum/species/proc/handle_sprint_cost(var/mob/living/carbon/human/H, var/cost)
+// pre_move is set to TRUE when the mob checks whether it's even possible to move, so resources aren't drained until after the move completes
+// once the mob moves and its loc actually changes, the pre_move is set to FALSE and all the proper resources are drained
+/datum/species/proc/handle_sprint_cost(var/mob/living/carbon/human/H, var/cost, var/pre_move)
 	if (!H.exhaust_threshold)
 		return 1 // Handled.
 
+	cost += H.getOxyLoss() * 0.1 //The less oxygen we get, the more we strain. 
 	cost *= H.sprint_cost_factor
+	if(H.is_drowsy())
+		cost *= 1.25
 	if (H.stamina == -1)
 		log_debug("Error: Species with special sprint mechanics has not overridden cost function.")
 		return 0
@@ -548,44 +564,50 @@
 	var/obj/item/organ/internal/augment/calf_override/C = H.internal_organs_by_name[BP_AUG_CALF_OVERRIDE]
 	if(C && !C.is_broken())
 		cost = 0
-		C.do_run_act()
+		if(!pre_move)
+			C.do_run_act()
 
 	var/remainder = 0
 	if (H.stamina > cost)
-		H.stamina -= cost
-		H.hud_used.move_intent.update_move_icon(H)
+		if(!pre_move)
+			H.stamina -= cost
+			H.hud_used.move_intent.update_move_icon(H)
 		return 1
 	else if (H.stamina > 0)
 		remainder = cost - H.stamina
-		H.stamina = 0
+		if(!pre_move)
+			H.stamina = 0
 	else
 		remainder = cost
 
-	if(H.disabilities & ASTHMA)
+	if(!pre_move && (H.disabilities & ASTHMA))
 		H.adjustOxyLoss(remainder*0.15)
 
-	if(H.disabilities & COUGHING)
+	if(!pre_move && (H.disabilities & COUGHING))
 		H.adjustHalLoss(remainder*0.1)
 
-	if (breathing_organ && has_organ[breathing_organ])
+	if(!pre_move && breathing_organ && has_organ[breathing_organ])
 		var/obj/item/organ/O = H.internal_organs_by_name[breathing_organ]
 		if(O.is_bruised())
 			H.adjustOxyLoss(remainder*0.15)
 			H.adjustHalLoss(remainder*0.25)
+		H.adjustOxyLoss(remainder * 0.2) //Keeping oxyloss small when out of stamina to prevent old issue where running until exhausted sometimes gave you brain damage.
 
-	H.adjustHalLoss(remainder*0.25)
-	H.updatehealth()
-	if((H.get_shock() >= 10) && prob(H.get_shock() *2))
-		H.flash_pain(H.get_shock())
+	if(!pre_move)
+		H.adjustHalLoss(remainder*0.3)
+		H.updatehealth()
+		if((H.get_shock() >= 10) && prob(H.get_shock() *2))
+			H.flash_pain(H.get_shock())
 
-	if ((H.get_shock() + H.getOxyLoss()) >= (exhaust_threshold * 0.8))
+	if((H.get_shock() + H.getOxyLoss()*2) >= (exhaust_threshold * 0.8))
 		H.m_intent = M_WALK
 		H.hud_used.move_intent.update_move_icon(H)
 		to_chat(H, SPAN_DANGER("You're too exhausted to run anymore!"))
 		H.flash_pain(H.get_shock())
 		return 0
 
-	H.hud_used.move_intent.update_move_icon(H)
+	if(!pre_move)
+		H.hud_used.move_intent.update_move_icon(H)
 	return 1
 
 /datum/species/proc/get_light_color(mob/living/carbon/human/H)
@@ -595,9 +617,17 @@
 	return FALSE
 
 /datum/species/proc/get_move_trail(var/mob/living/carbon/human/H)
-	if( H.shoes || ( H.wear_suit && (H.wear_suit.body_parts_covered & FEET) ) )
-		return /obj/effect/decal/cleanable/blood/tracks/footprints
-	else
+	if(H.lying)
+		return /obj/effect/decal/cleanable/blood/tracks/body
+	else if(H.shoes || (H.wear_suit && (H.wear_suit.body_parts_covered & FEET)))
+		var/obj/item/clothing/shoes
+		if(H.wear_suit && (H.wear_suit.body_parts_covered & FEET))
+			shoes = H.wear_suit
+			. = shoes.move_trail
+		if(H.shoes && !.)
+			shoes = H.shoes
+			. = shoes.move_trail
+	if(!.)
 		return move_trail
 
 /datum/species/proc/bullet_act(var/obj/item/projectile/P, var/def_zone, var/mob/living/carbon/human/H)

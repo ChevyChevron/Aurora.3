@@ -81,15 +81,18 @@
 		/obj/item/reagent_containers/food/drinks/bottle/sake = 1,
 		/obj/item/reagent_containers/food/drinks/bottle/cremewhite = 4,
 		/obj/item/reagent_containers/food/drinks/bottle/mintsyrup = 5,
+		/obj/item/reagent_containers/food/drinks/bottle/nmshaan_liquor = 2,
 		/obj/item/reagent_containers/food/drinks/bottle/chartreuseyellow =5,
+		/obj/item/reagent_containers/food/drinks/bottle/messa_mead = 2,
 		/obj/item/reagent_containers/food/drinks/bottle/small/ale = 6,
 		/obj/item/reagent_containers/food/drinks/bottle/small/beer = 6,
 		/obj/item/reagent_containers/food/drinks/bottle/small/xuizijuice = 8,
+		/obj/item/reagent_containers/food/drinks/bottle/small/khlibnyz = 4,
 		/obj/item/reagent_containers/food/drinks/bottle/cola = 5,
 		/obj/item/reagent_containers/food/drinks/bottle/space_mountain_wind = 5,
 		/obj/item/reagent_containers/food/drinks/bottle/space_up = 5,
 		/obj/item/reagent_containers/food/drinks/bottle/hrozamal_soda = 2,
-		/obj/item/reagent_containers/food/drinks/cans/adhomai_milk = 2,
+		/obj/item/reagent_containers/food/drinks/bottle/small/midynhr_water = 3,
 		/obj/item/reagent_containers/food/drinks/cans/grape_juice = 6,
 		/obj/item/reagent_containers/food/drinks/cans/beetle_milk = 2,
 		/obj/item/reagent_containers/food/drinks/cans/sodawater = 15,
@@ -102,6 +105,8 @@
 		/obj/item/reagent_containers/food/drinks/carton/lemonjuice = 4,
 		/obj/item/reagent_containers/food/drinks/carton/orangejuice = 4,
 		/obj/item/reagent_containers/food/drinks/carton/tomatojuice = 4,
+		/obj/item/reagent_containers/food/drinks/carton/fatshouters = 2,
+		/obj/item/reagent_containers/food/drinks/carton/mutthir = 2,
 		/obj/item/reagent_containers/food/drinks/flask/barflask = 2,
 		/obj/item/reagent_containers/food/drinks/flask/vacuumflask = 2,
 		/obj/item/reagent_containers/food/drinks/ice = 9,
@@ -376,6 +381,8 @@
 		/obj/item/storage/box/fancy/cigarettes/dromedaryco = 5,
 		/obj/item/storage/box/fancy/cigarettes/nicotine = 3,
 		/obj/item/storage/box/fancy/cigarettes/pra = 6,
+		/obj/item/storage/box/fancy/cigarettes/dpra = 6,
+		/obj/item/storage/box/fancy/cigarettes/nka = 6,
 		/obj/item/storage/chewables/rollable = 8,
 		/obj/item/storage/chewables/rollable/unathi = 6,
 		/obj/item/storage/chewables/rollable/fine = 5,
@@ -406,6 +413,8 @@
 		/obj/item/storage/box/fancy/cigarettes/dromedaryco = 82,
 		/obj/item/storage/box/fancy/cigarettes/nicotine = 89,
 		/obj/item/storage/box/fancy/cigarettes/pra = 79,
+		/obj/item/storage/box/fancy/cigarettes/dpra = 84,
+		/obj/item/storage/box/fancy/cigarettes/nka = 74,
 		/obj/item/storage/chewables/rollable = 63,
 		/obj/item/storage/chewables/rollable/unathi = 65,
 		/obj/item/storage/chewables/rollable/fine = 69,
@@ -459,6 +468,7 @@
 		/obj/item/reagent_containers/glass/bottle/perconol = 3,
 		/obj/item/reagent_containers/glass/bottle/toxin = 1,
 		/obj/item/reagent_containers/glass/bottle/coughsyrup = 4,
+		/obj/item/reagent_containers/glass/bottle/thetamycin = 1,
 		/obj/item/reagent_containers/syringe = 12,
 		/obj/item/device/healthanalyzer = 5,
 		/obj/item/device/breath_analyzer = 2,
@@ -653,13 +663,15 @@
 		/obj/item/seeds/chiliseed = 3,
 		/obj/item/seeds/cocoapodseed = 3,
 		/obj/item/seeds/cornseed = 3,
-		/obj/item/seeds/replicapod = 3,
+		/obj/item/seeds/dynseed = 3,
 		/obj/item/seeds/earthenroot = 2,
 		/obj/item/seeds/eggplantseed = 3,
+		/obj/item/seeds/eki = 3,
 		/obj/item/seeds/garlicseed = 3,
 		/obj/item/seeds/grapeseed = 3,
 		/obj/item/seeds/grassseed = 3,
 		/obj/item/seeds/greengrapeseed = 3,
+		/obj/item/seeds/guamiseed = 3,
 		/obj/item/seeds/harebell = 3,
 		/obj/item/seeds/lemonseed = 3,
 		/obj/item/seeds/limeseed = 3,
@@ -674,8 +686,11 @@
 		/obj/item/seeds/poppyseed = 3,
 		/obj/item/seeds/potatoseed = 3,
 		/obj/item/seeds/pumpkinseed = 3,
-		/obj/item/seeds/riceseed = 3,
+		/obj/item/seeds/qlortseed = 3,
+		/obj/item/seeds/clam/rasval = 3,
+		/obj/item/seeds/replicapod = 3,
 		/obj/item/seeds/reishimycelium = 3,
+		/obj/item/seeds/riceseed = 3,
 		/obj/item/seeds/shandseed = 3,
 		/obj/item/seeds/soyaseed = 3,
 		/obj/item/seeds/sugarcaneseed = 3,
@@ -687,8 +702,8 @@
 		/obj/item/seeds/watermelonseed = 3,
 		/obj/item/seeds/wheatseed = 3,
 		/obj/item/seeds/whitebeetseed = 3,
-		/obj/item/seeds/dynseed = 3,
-		/obj/item/seeds/wulumunushaseed = 2
+		/obj/item/seeds/wulumunushaseed = 2,
+		/obj/item/seeds/ylpha = 3
 	)
 	contraband = list(
 		/obj/item/seeds/amanitamycelium = 3,
@@ -714,13 +729,15 @@
 		/obj/item/seeds/chiliseed = 50,
 		/obj/item/seeds/cocoapodseed = 50,
 		/obj/item/seeds/cornseed = 30,
-		/obj/item/seeds/replicapod = 200,
+		/obj/item/seeds/dynseed = 80,
 		/obj/item/seeds/earthenroot = 70,
 		/obj/item/seeds/eggplantseed = 30,
+		/obj/item/seeds/eki = 90,
 		/obj/item/seeds/garlicseed = 30,
 		/obj/item/seeds/grapeseed = 40,
 		/obj/item/seeds/grassseed = 40,
 		/obj/item/seeds/greengrapeseed = 40,
+		/obj/item/seeds/guamiseed = 80,
 		/obj/item/seeds/harebell = 10,
 		/obj/item/seeds/lemonseed = 40,
 		/obj/item/seeds/limeseed = 50,
@@ -735,7 +752,10 @@
 		/obj/item/seeds/poppyseed = 10,
 		/obj/item/seeds/potatoseed = 30,
 		/obj/item/seeds/pumpkinseed = 40,
+		/obj/item/seeds/qlortseed = 70,
+		/obj/item/seeds/clam/rasval = 100,
 		/obj/item/seeds/reishimycelium = 30,
+		/obj/item/seeds/replicapod = 200,
 		/obj/item/seeds/riceseed = 20,
 		/obj/item/seeds/shandseed = 60,
 		/obj/item/seeds/soyaseed = 40,
@@ -748,8 +768,8 @@
 		/obj/item/seeds/watermelonseed = 30,
 		/obj/item/seeds/wheatseed = 20,
 		/obj/item/seeds/whitebeetseed = 20,
-		/obj/item/seeds/dynseed = 80,
-		/obj/item/seeds/wulumunushaseed = 90
+		/obj/item/seeds/wulumunushaseed = 90,
+		/obj/item/seeds/ylpha = 95
 	)
 	restock_items = 1
 	random_itemcount = 0
@@ -780,32 +800,6 @@
 			product.category = category
 
 			src.product_records.Add(product)
-
-/obj/machinery/vending/magivend
-	name = "MagiVend"
-	desc = "A magic vending machine."
-	icon_state = "magivend"
-	product_slogans = "Sling spells the proper way with MagiVend!;Be your own Houdini! Use MagiVend!"
-	vend_delay = 15
-	vend_reply = "Have an enchanted evening!"
-	product_ads = "FJKLFJSD;AJKFLBJAKL;1234 LOONIES LOL!;>MFW;Kill them fuckers!;GET DAT FUKKEN DISK;HONK!;EI NATH;Destroy the station!;Admin conspiracies since forever!;Space-time bending hardware!" //What the fuck is this
-	vend_id = "magic"
-	products = list(
-		/obj/item/clothing/head/wizard = 1,
-		/obj/item/clothing/suit/wizrobe = 1,
-		/obj/item/clothing/shoes/sandal = 1,
-		/obj/item/staff = 1
-	)
-	contraband = list(
-		/obj/item/clothing/head/wizard/red = 1,
-		/obj/item/clothing/suit/wizrobe/red = 1,
-	)
-	premium = list(
-		/obj/item/clothing/head/wizard/fake = 1
-	)
-	restock_items = 1
-	random_itemcount = 0
-	light_color = COLOR_BABY_BLUE
 
 /obj/machinery/vending/dinnerware
 	name = "Dinnerware"
@@ -893,11 +887,12 @@
 		/obj/item/wrench = 5,
 		/obj/item/device/analyzer = 5,
 		/obj/item/device/t_scanner = 5,
-		/obj/item/screwdriver = 5
+		/obj/item/screwdriver = 5,
+		/obj/item/tape_roll = 3
 	)
 	contraband = list(
 		/obj/item/weldingtool/hugetank = 2,
-		/obj/item/clothing/gloves/fyellow = 2
+		/obj/item/clothing/gloves/yellow/budget = 2
 	)
 	premium = list(
 		/obj/item/clothing/gloves/yellow = 1
@@ -1023,7 +1018,8 @@
 		/obj/item/stock_parts/micro_laser = 5,
 		/obj/item/stock_parts/matter_bin = 5,
 		/obj/item/stock_parts/manipulator = 5,
-		/obj/item/stock_parts/console_screen = 5
+		/obj/item/stock_parts/console_screen = 5,
+		/obj/item/tape_roll = 5
 	)
 	// There was an incorrect entry (cablecoil/power).  I improvised to cablecoil/heavyduty.
 	// Another invalid entry, /obj/item/circuitry.  I don't even know what that would translate to, removed it.

@@ -15,6 +15,7 @@
 	var/action_button_icon = "augment"
 	var/activable = FALSE
 	var/bypass_implant = FALSE
+	var/supports_limb = FALSE // if true, will make parent limb not count as broken, as long as it's not bruised (40%) and not broken (0%)
 
 /obj/item/organ/internal/augment/Initialize()
 	robotize()
@@ -124,6 +125,17 @@
 	augment_type = /obj/item/combitool/robotic
 
 /obj/item/organ/internal/augment/tool/combitool/left
+	parent_organ = BP_L_HAND
+
+/obj/item/organ/internal/augment/tool/combitool/lighter
+	name = "integrated lighter"
+	icon_state = "lighter-aug"
+	action_button_name = "Deploy Lighter"
+	action_button_icon = "lighter-aug"
+	organ_tag = BP_AUG_LIGHTER
+	augment_type = /obj/item/flame/lighter/zippo/augment
+
+/obj/item/organ/internal/augment/tool/combitool/lighter/left
 	parent_organ = BP_L_HAND
 
 /obj/item/organ/internal/augment/health_scanner
@@ -391,6 +403,26 @@
 /obj/item/organ/internal/augment/gustatorial/hand/left
 	parent_organ = BP_L_HAND
 
+/obj/item/organ/internal/augment/synthetic_cords
+	name = "synthetic vocal cords"
+	desc = "An array of vocal cords loaded into an augment kit, allowing easy installation by a skilled technician."
+	organ_tag = BP_AUG_CORDS
+	parent_organ = BP_HEAD
+
+/obj/item/organ/internal/augment/synthetic_cords/replaced(var/mob/living/carbon/human/target, obj/item/organ/external/affected)
+	. = ..()
+	target.sdisabilities &= ~MUTE
+
+/obj/item/organ/internal/augment/synthetic_cords/removed(var/mob/living/carbon/human/target, mob/living/user)
+	target.sdisabilities |= MUTE
+	..()
+
+/obj/item/organ/internal/augment/cochlear
+	name = "cochlear implant"
+	desc = "A synthetic replacement for the structures within the ear, allowing the user to hear without requiring external tools."
+	organ_tag = BP_AUG_COCHLEAR
+	parent_organ = BP_HEAD
+
 // Snakebitten!
 /obj/item/organ/internal/augment/psi
 	name = "psionic receiver"
@@ -542,15 +574,15 @@
 		set_light(0)
 
 /obj/item/organ/internal/augment/sightlights/emp_act(severity)
-	..()
+	. = ..()
 	set_light(0)
 
 /obj/item/organ/internal/augment/sightlights/take_damage(var/amount, var/silent = 0)
-	..()
+	. = ..()
 	set_light(0)
 
 /obj/item/organ/internal/augment/sightlights/take_internal_damage(var/amount, var/silent = 0)
-	..()
+	. = ..()
 	set_light(0)
 
 /obj/item/organ/internal/augment/zenghu_plate
